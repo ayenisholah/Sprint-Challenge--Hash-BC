@@ -10,6 +10,13 @@ from timeit import default_timer as timer
 import random
 
 
+class Blockchain(object):
+    def __init__(self):
+        self.chain = []
+        self.current_transactions = []
+        self.nodes = set()
+
+
 def proof_of_work(last_proof):
     """
     Multi-Ouroboros of Work Algorithm
