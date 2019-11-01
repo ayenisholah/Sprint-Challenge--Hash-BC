@@ -1,9 +1,14 @@
 import hashlib
 import requests
+import hashlib
+
 
 import sys
 
 from uuid import uuid4
+
+from time import time
+
 
 from timeit import default_timer as timer
 
@@ -16,38 +21,60 @@ class Blockchain(object):
         self.current_transactions = []
         self.nodes = set()
 
+    def new_block(self, proof, previous_hash=None):
+        """
+        Create a new Block in the Blockchain
+        :param proof: <int> The proof given by the Proof of Work algorithm
+        :param previous_hash: (Optional) <str> Hash of previous Block
+        :return: <dict> New Block
+        """
 
-def proof_of_work(last_proof):
-    """
-    Multi-Ouroboros of Work Algorithm
-    - Find a number p' such that the last six digits of hash(p) are equal
-    to the first six digits of hash(p')
-    - IE:  last_hash: ...AE9123456, new hash 123456888...
-    - p is the previous proof, and p' is the new proof
-    - Use the same method to generate SHA-256 hashes as the examples in class
-    - Note:  We are adding the hash of the last proof to a number/nonce for the new proof
-    """
+        block = {
+            "index": len(self.chain) + 1,
+            "timestamp": time(),
+            "transactions": self.current_transactions,
+            "proof": proof,
+            "previous_hash": previous_hash or self.hash(self.chain[-1])
+        }
 
-    start = timer()
+        # Reset the current list of transactions
+        self.current_transactions = []
 
-    print("Searching for next proof")
-    proof = 0
-    #  TODO: Your code here
+        self.chain.append(block)
+        return block
 
-    print("Proof found: " + str(proof) + " in " + str(timer() - start))
-    return proof
+    def proof_of_work(last_proof):
+        """
+        Multi-Ouroboros of Work Algorithm
+        - Find a number p' such that the last six digits of hash(p) are equal
+        to the first six digits of hash(p')
+        - IE:  last_hash: ...AE9123456, new hash 123456888...
+        - p is the previous proof, and p' is the new proof
+        - Use the same method to generate SHA-256 hashes as the examples in class
+        - Note:  We are adding the hash of the last proof to a number/nonce for the new proof
+        """
 
+        start = timer()
 
-def valid_proof(last_hash, proof):
-    """
-    Validates the Proof:  Multi-ouroborus:  Do the last six characters of
-    the hash of the last proof match the first six characters of the proof?
+        print("Searching for next proof")
+        proof = 0
+        #  TODO: Your code here
 
-    IE:  last_hash: ...AE9123456, new hash 123456888...
-    """
+        print("Proof found: " + str(proof) + " in " + str(timer() - start))
+        return proof
 
-    # TODO: Your code here!
-    pass
+    def valid_proof(last_hash, proof):
+        """
+        Validates the Proof:  Multi-ouroborus:  Do the last six characters of
+        the hash of the last proof match the first six characters of the proof?
+
+        IE:  last_hash: ...AE9123456, new hash 123456888...
+        """
+
+        # TODO: Your code here!
+        pass
+
+    
 
 
 if __name__ == '__main__':
@@ -59,7 +86,7 @@ if __name__ == '__main__':
 
     coins_mined = 0
 
-    # Load or create ID
+    # Load or create ID ---> We're reading the id from my_id.txt, thus we're loading the ID
     f = open("my_id.txt", "r")
     id = f.read()
     print("ID is", id)
