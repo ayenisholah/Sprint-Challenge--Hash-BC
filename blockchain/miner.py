@@ -1,18 +1,12 @@
 import hashlib
 import requests
 import hashlib
-
-
 import sys
-
 from uuid import uuid4
-
 from time import time
-
-
 from timeit import default_timer as timer
-
 import random
+from flask import Flask, jsonify, request
 
 
 class Blockchain(object):
@@ -74,7 +68,39 @@ class Blockchain(object):
         # TODO: Your code here!
         pass
 
-    
+    @staticmethod
+    def hash(block):
+        """
+        Creates a SHA-256 hash of a Block
+        :param block": <dict> Block
+        "return": <str>
+        """
+
+        # Two line version:
+        # block_string = json.dumps(block, sort_keys=True).encode()
+        # return hashlib.sha256(block_string).hexdigest()
+
+        # Use json.dumps to convert json into a string
+        # Use hashlib.sha256 to create a hash
+        # It requires a `bytes-like` object, which is what
+        # .encode() does.
+        # It convertes the string to bytes.
+        # We must make sure that the Dictionary is Ordered,
+        # or we'll have inconsistent hashes
+
+        string_object = json.dumps(block, sort_keys=True)
+        block_string = string_object.encode()
+
+        raw_hash = hashlib.sha256(block_string)
+        hex_hash = raw_hash.hexdigest()
+
+        # By itself, the sha256 function returns the hash in a raw string
+        # that will likely include escaped characters.
+        # This can be hard to read, but .hexdigest() converts the
+        # hash to a string of hexadecimal characters, which is
+        # easier to work with and understand
+
+        return hex_hash
 
 
 if __name__ == '__main__':
